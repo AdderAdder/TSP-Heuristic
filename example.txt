@@ -1,3 +1,4 @@
+4
 Stockholm Uppsala 74
 Uppsala Stockholm 78
 Uppsala Göteborg 314
