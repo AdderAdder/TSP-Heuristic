@@ -1,0 +1,12 @@
+Stockholm Uppsala 74
+Uppsala Stockholm 78
+Uppsala Göteborg 314
+Göteborg Uppsala 318
+Göteborg Stockholm 327
+Stockholm Göteborg 299
+Stockholm Malmö 381
+Malmö Stockholm 379
+Malmö Göteborg 169
+Göteborg Malmö 182
+Malmö Uppsala 426
+Uppsala Malmö 433
