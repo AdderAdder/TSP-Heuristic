@@ -46,28 +46,57 @@ int main() {
   tot.reserve(cities-2);
   for (int k = 2; k <= cities; k++) {
     std::set<int> tmp = {k};
-    tot[k-2] = k;
+    tot.push_back(k);
     totSet.insert(k);
     minPathCost.insert({std::make_pair(tmp,k),edges.at({1,k})});
+    print("Base case: ");
+    print("Set: ");
+    print(k);
+    print("Node: ");
+    print(k);
   }
   print("Base case is done");
 
   for (int subSize = 2; subSize < cities; subSize++) {
     int skip = 0;
     do {
+      print("***** Start");
+      for (auto a = tot.cbegin(); a != tot.cend(); a++)
+        print(*a);
+      print("***** End");
+
       if (skip == 0) {
+        print("----- Found new subset:");
         std::set<int> subSet;
         for (int taken = 0; taken < subSize; taken++) {
           subSet.insert(tot[taken]);
+          print(tot[taken]);
         }
+        print("----- End of new subset");
 
         for (auto it = subSet.cbegin(); it != subSet.cend(); it++) {
           int minCost = std::numeric_limits<int>::max();
           std::set<int> tmpSet (subSet);
           tmpSet.erase(*it);
-          for (auto it2 = subSet.cbegin(); it != subSet.cend(); it2++) {
+
+          print("Iterating subset. First node is: ");
+          print(*it);
+          print("Subset is: ");
+          for (auto tmpIt = tmpSet.cbegin(); tmpIt != tmpSet.cend(); tmpIt++)
+            print(*tmpIt);
+          print("End of subset");
+
+          for (auto it2 = subSet.cbegin(); it2 != subSet.cend(); it2++) {
             if (it2 != it) {
-              int tmpCost = minPathCost[std::make_pair(tmpSet,*it2)] + edges[std::make_pair(*it2,*it)];
+
+              print("Trying to access using previously printed set and node: ");
+              print(*it2);
+              print("Trying to access edge from node");
+              print(*it2);
+              print("to node");
+              print(*it);
+
+              int tmpCost = minPathCost.at(std::make_pair(tmpSet,(*it2))) + edges.at(std::make_pair((*it2),(*it)));
               if (minCost > tmpCost) {
                 minCost = tmpCost;
               }
@@ -76,10 +105,13 @@ int main() {
           minPathCost.insert({std::make_pair(subSet,*it),minCost});
         }
 
-        skip = [](int num)->int {int tmp = 1; for (int i = 1; i <= num; i++) tmp *= i; return tmp;}(cities-subSize);
+        skip = [](int num)->int {int tmp = 1; for (int i = 1; i <= num; i++) tmp *= i; return tmp;}(cities-subSize-2);
       }
       --skip;
+      print("New value of 'skip' variable is: ");
+      print(skip);
     } while (std::next_permutation(tot.begin(),tot.end()));
+    print("No more subsets of the given size exists. Moving on to bigger subsets!");
   }
   print("Recursive steps are done");
 
