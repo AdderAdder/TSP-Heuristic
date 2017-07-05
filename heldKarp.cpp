@@ -6,11 +6,11 @@
  */
 
 //Define macros for debugging
- #ifdef DEBUG
- #define print(x) std::cout << x << std::endl
- #else
- #define print(x)
- #endif
+#ifdef DEBUG
+#define print(x) std::cout << x << std::endl
+#else
+#define print(x)
+#endif
 
 #include <iostream>
 #include <string>
@@ -96,7 +96,7 @@ int main() {
               print("to node");
               print(*it);
 
-              int tmpCost = minPathCost.at(std::make_pair(tmpSet,(*it2))) + edges.at(std::make_pair((*it2),(*it)));
+              int tmpCost = minPathCost.at(std::make_pair(tmpSet,*it2)) + edges.at(std::make_pair(*it2,*it));
               if (minCost > tmpCost) {
                 minCost = tmpCost;
               }
