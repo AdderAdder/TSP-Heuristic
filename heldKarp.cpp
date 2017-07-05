@@ -48,7 +48,7 @@ int main() {
     std::set<int> tmp = {k};
     tot.push_back(k);
     totSet.insert(k);
-    minPathCost.insert({std::make_pair(tmp,k),edges[{k,1}]});
+    minPathCost.insert({std::make_pair(tmp,k),edges[{1,k}]});
   }
   for (int subSize = 2; subSize < cities; subSize++) {
     int skip = 0;
@@ -77,7 +77,7 @@ int main() {
 
             for (auto it2 = subSet.cbegin(); it2 != subSet.cend(); it2++) {
               if (it2 != it) {
-                int tmpCost = minPathCost.at(std::make_pair(tmpSet,*it2)) + edges[std::make_pair(*it,*it2)];
+                int tmpCost = minPathCost.at(std::make_pair(tmpSet,*it2)) + edges[std::make_pair(*it2,*it)];
                 if (minCost > tmpCost) {
                   minCost = tmpCost;
                 }
@@ -95,7 +95,7 @@ int main() {
 
   int minCost = std::numeric_limits<int>::max();
   for (auto it = tot.cbegin(); it != tot.cend(); it++) {
-    int tmpCost = minPathCost[std::make_pair(totSet,*it)] + edges[std::make_pair(1,*it)];
+    int tmpCost = minPathCost[std::make_pair(totSet,*it)] + edges[std::make_pair(*it,1)];
     if (minCost > tmpCost) {
       minCost = tmpCost;
     }
