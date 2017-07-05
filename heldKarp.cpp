@@ -38,7 +38,7 @@ int main() {
     }
     edges.insert({std::make_pair(dictionary[fromCity],dictionary[toCity]),cost});
   }
-  print("Held-Karp start");
+
   //Held-Karp algorithm starts here
   //Based on pseudocode from https://en.wikipedia.org/wiki/Held–Karp_algorithm
   std::vector<int> tot;
@@ -48,68 +48,62 @@ int main() {
     std::set<int> tmp = {k};
     tot.push_back(k);
     totSet.insert(k);
-    minPathCost.insert({std::make_pair(tmp,k),edges.at({1,k})});
-    print("Base case: ");
-    print("Set: ");
+    minPathCost.insert({std::make_pair(tmp,k),edges[{k,1}]});
+    print("----- Min cost path from node 1 to k is");
     print(k);
-    print("Node: ");
-    print(k);
+    int z = edges[{k,1}];
+    print(z);
   }
-  print("Base case is done");
-
+  print("-----");
   for (int subSize = 2; subSize < cities; subSize++) {
     int skip = 0;
+    std::vector<std::set<int>> oldSubSets;
     do {
-      print("***** Start");
-      for (auto a = tot.cbegin(); a != tot.cend(); a++)
-        print(*a);
-      print("***** End");
 
       if (skip == 0) {
-        print("----- Found new subset:");
         std::set<int> subSet;
         for (int taken = 0; taken < subSize; taken++) {
           subSet.insert(tot[taken]);
-          print(tot[taken]);
         }
-        print("----- End of new subset");
 
-        for (auto it = subSet.cbegin(); it != subSet.cend(); it++) {
-          int minCost = std::numeric_limits<int>::max();
-          std::set<int> tmpSet (subSet);
-          tmpSet.erase(*it);
+        bool alreadyDone = false;
+        for (auto it = oldSubSets.cbegin(); it != oldSubSets.cend(); it++) {
+          if (subSet == *it) {
+            alreadyDone = true;
+            break;
+          }
+        }
 
-          print("Iterating subset. First node is: ");
-          print(*it);
-          print("Subset is: ");
-          for (auto tmpIt = tmpSet.cbegin(); tmpIt != tmpSet.cend(); tmpIt++)
-            print(*tmpIt);
-          print("End of subset");
+        if (!alreadyDone) {
+          for (auto it = subSet.cbegin(); it != subSet.cend(); it++) {
+            int minCost = std::numeric_limits<int>::max();
+            std::set<int> tmpSet (subSet);
+            tmpSet.erase(*it);
 
-          for (auto it2 = subSet.cbegin(); it2 != subSet.cend(); it2++) {
-            if (it2 != it) {
-
-              print("Trying to access using previously printed set and node: ");
-              print(*it2);
-              print("Trying to access edge from node");
-              print(*it2);
-              print("to node");
-              print(*it);
-
-              int tmpCost = minPathCost.at(std::make_pair(tmpSet,*it2)) + edges.at(std::make_pair(*it2,*it));
-              if (minCost > tmpCost) {
-                minCost = tmpCost;
+            for (auto it2 = subSet.cbegin(); it2 != subSet.cend(); it2++) {
+              if (it2 != it) {
+                int tmpCost = minPathCost.at(std::make_pair(tmpSet,*it2)) + edges[std::make_pair(*it,*it2)];
+                if (minCost > tmpCost) {
+                  minCost = tmpCost;
+                }
               }
             }
-          }
-          minPathCost.insert({std::make_pair(subSet,*it),minCost});
-        }
+            print("***** Min cost for ");
+            print(*it);
+            print("With set ");
+            for (auto z = subSet.cbegin(); z != subSet.cend(); z++)
+              print(*z);
+            print("is ");
+            print(minCost);
+            print("*****");
 
+            minPathCost.insert({std::make_pair(subSet,*it),minCost});
+            oldSubSets.push_back(subSet);
+          }
+        }
         skip = [](int num)->int {int tmp = 1; for (int i = 1; i <= num; i++) tmp *= i; return tmp;}(cities-subSize-2);
       }
       --skip;
-      print("New value of 'skip' variable is: ");
-      print(skip);
     } while (std::next_permutation(tot.begin(),tot.end()));
     print("No more subsets of the given size exists. Moving on to bigger subsets!");
   }
@@ -117,12 +111,12 @@ int main() {
 
   int minCost = std::numeric_limits<int>::max();
   for (auto it = tot.cbegin(); it != tot.cend(); it++) {
-    totSet.erase(*it);
-    int tmpCost = minPathCost[std::make_pair(totSet,*it)] + edges[std::make_pair(*it,1)];
+    std::set<int> tmpSet (totSet);
+    tmpSet.erase(*it);
+    int tmpCost = minPathCost[std::make_pair(tmpSet,*it)] + edges[std::make_pair(1,*it)];
     if (minCost > tmpCost) {
       minCost = tmpCost;
     }
-    totSet.insert(*it);
   }
 
   std::cout << "The minimum cost to travel is " << minCost << std::endl;
