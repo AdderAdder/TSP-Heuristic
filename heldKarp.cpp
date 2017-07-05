@@ -88,15 +88,6 @@ int main() {
                 }
               }
             }
-            print("***** Min cost for ");
-            print(*it);
-            print("With set ");
-            for (auto z = subSet.cbegin(); z != subSet.cend(); z++)
-              print(*z);
-            print("is ");
-            print(minCost);
-            print("*****");
-
             minPathCost.insert({std::make_pair(subSet,*it),minCost});
             oldSubSets.push_back(subSet);
           }
@@ -105,15 +96,11 @@ int main() {
       }
       --skip;
     } while (std::next_permutation(tot.begin(),tot.end()));
-    print("No more subsets of the given size exists. Moving on to bigger subsets!");
   }
-  print("Recursive steps are done");
 
   int minCost = std::numeric_limits<int>::max();
   for (auto it = tot.cbegin(); it != tot.cend(); it++) {
-    std::set<int> tmpSet (totSet);
-    tmpSet.erase(*it);
-    int tmpCost = minPathCost[std::make_pair(tmpSet,*it)] + edges[std::make_pair(1,*it)];
+    int tmpCost = minPathCost[std::make_pair(totSet,*it)] + edges[std::make_pair(1,*it)];
     if (minCost > tmpCost) {
       minCost = tmpCost;
     }
