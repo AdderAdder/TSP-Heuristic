@@ -22,21 +22,25 @@
 #include <limits>
 
 std::map<std::pair<std::set<int>,int>,int> minPathCost;
+std::map<std::pair<std::set<int>,int>,int> prevPos;
 std::map<std::pair<int,int>,int> edges;
-std::map<std::string,int> dictionary;
+std::map<std::string,int> stringToInt;
+std::map<int,std::string> intToString
 
 int main() {
   std::string fromCity,toCity; int cities,cost,city = 1;
   // Read graph
   std::cin >> cities;
   while (std::cin >> fromCity >> toCity >> cost) {
-    if (!dictionary.count(fromCity)) {
-      dictionary.insert({fromCity,city++});
+    if (!stringToInt.count(fromCity)) {
+      stringToInt.insert({fromCity,city});
+      intToString.insert({city++,fromCity});
     }
-    if (!dictionary.count(toCity)) {
-      dictionary.insert({toCity,city++});
+    if (!stringToInt.count(toCity)) {
+      stringToInt.insert({toCity,city});
+      intToString.insert({city++,toCity});
     }
-    edges.insert({std::make_pair(dictionary[fromCity],dictionary[toCity]),cost});
+    edges.insert({std::make_pair(stringToInt[fromCity],stringToInt[toCity]),cost});
   }
 
   //Held-Karp algorithm starts here
@@ -49,6 +53,7 @@ int main() {
     tot.push_back(k);
     totSet.insert(k);
     minPathCost.insert({std::make_pair(tmp,k),edges[{1,k}]});
+    prevPos.insert({std::make_pair(tmp,k),1});
   }
   for (int subSize = 2; subSize < cities; subSize++) {
     int skip = 0;
@@ -74,16 +79,19 @@ int main() {
             int minCost = std::numeric_limits<int>::max();
             std::set<int> tmpSet (subSet);
             tmpSet.erase(*it);
+            int oldPos;
 
             for (auto it2 = subSet.cbegin(); it2 != subSet.cend(); it2++) {
               if (it2 != it) {
                 int tmpCost = minPathCost.at(std::make_pair(tmpSet,*it2)) + edges[std::make_pair(*it2,*it)];
                 if (minCost > tmpCost) {
+                  oldPos = *it2;
                   minCost = tmpCost;
                 }
               }
             }
             minPathCost.insert({std::make_pair(subSet,*it),minCost});
+            prevPos.insert({std::make_pair(subSet,*it),oldPos});
             oldSubSets.push_back(subSet);
           }
         }
@@ -94,14 +102,30 @@ int main() {
   }
 
   int minCost = std::numeric_limits<int>::max();
+  int oldPos;
   for (auto it = tot.cbegin(); it != tot.cend(); it++) {
     int tmpCost = minPathCost[std::make_pair(totSet,*it)] + edges[std::make_pair(*it,1)];
     if (minCost > tmpCost) {
+      oldPos = *it;
       minCost = tmpCost;
     }
   }
 
-  std::cout << "The minimum cost to travel is " << minCost << std::endl;
+  std::vector<int> path;
+  path.push_back(1);
+  while (totSet.size() != 1) {
+    path.push_back(oldPos);
+    int tmp = prevPos[std::make_pair(totSet,oldPos)];
+    totSet.erase(oldPos);
+    oldPos = tmp;
+  }
+  path.push_back(*(totSet.begin()));
 
+  std::cout << "The minimum cost to travel is " << minCost << std::endl;
+  std::cout << "The path is: ";
+  for (auto it = path.cbegin(); it != path.cend(); it++) {
+    std::cout << intToString[*it] << " -> ";
+  }
+  std::cout << intToString[1] << std::endl;
   return 0;
 }
