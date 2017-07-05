@@ -25,7 +25,7 @@ std::map<std::pair<std::set<int>,int>,int> minPathCost;
 std::map<std::pair<std::set<int>,int>,int> prevPos;
 std::map<std::pair<int,int>,int> edges;
 std::map<std::string,int> stringToInt;
-std::map<int,std::string> intToString
+std::map<int,std::string> intToString;
 
 int main() {
   std::string fromCity,toCity; int cities,cost,city = 1;
