@@ -49,12 +49,7 @@ int main() {
     tot.push_back(k);
     totSet.insert(k);
     minPathCost.insert({std::make_pair(tmp,k),edges[{k,1}]});
-    print("----- Min cost path from node 1 to k is");
-    print(k);
-    int z = edges[{k,1}];
-    print(z);
   }
-  print("-----");
   for (int subSize = 2; subSize < cities; subSize++) {
     int skip = 0;
     std::vector<std::set<int>> oldSubSets;
