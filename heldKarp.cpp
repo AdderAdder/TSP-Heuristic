@@ -112,7 +112,6 @@ int main() {
   }
 
   std::vector<int> path;
-  path.push_back(1);
   while (totSet.size() != 1) {
     path.push_back(oldPos);
     int tmp = prevPos[std::make_pair(totSet,oldPos)];
@@ -123,7 +122,8 @@ int main() {
 
   std::cout << "The minimum cost to travel is " << minCost << std::endl;
   std::cout << "The path is: ";
-  for (auto it = path.cbegin(); it != path.cend(); it++) {
+  std::cout << intToString[1] << " -> ";
+  for (auto it = path.crbegin(); it != path.crend(); it++) {
     std::cout << intToString[*it] << " -> ";
   }
   std::cout << intToString[1] << std::endl;
